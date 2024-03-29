@@ -1,0 +1,41 @@
+Documentation File: 
+Instructions: Please click the “start” button to begin your quiz! Once you begin, please choose the best answer as it pertains to you. Based on your answers, you will find out which one of the four Hogwarts Houses you have been sorted into after the 7 questions!
+Questions:
+Which of the following colors do you like the most?
+-Red
+-Blue
+-Green 
+-White/yellow
+Which of the following animals do you like the most?
+-Eagle
+-Lion
+-Snake
+-Badger 
+Which of the following Harry Potter characters is your favorite?
+-Harry Potter
+-Luna Lovegood
+-Draco Malfoy
+-Cedric Diggory
+What do you like to do in your free time?
+-Read a book
+-Watch TV on the couch
+-Play sports
+-Work on an art project 
+Which of the following classes do you like the most?
+-Math
+-History
+-English/reading
+-Physical Education
+If you were a wizard, what class would you be most interested in taking?
+-History of Magic
+-Herbology 
+-Defense Against the Dark Arts
+-Care of Magical Creatures
+If you had to describe yourself in one word, which one would it be?
+-Brave
+-Loyal
+-Intelligent
+-Ambitious 
+
+Python Script File:
+We can use if/else statements to sort the subjects into a Hogwarts House depending on their answers to each of the questions. 
