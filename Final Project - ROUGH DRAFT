@@ -1,5 +1,4 @@
 import tkinter as tk
-from PIL import Image, ImageTk
 
 class SortingHatQuiz:
     def __init__(self, root):
@@ -25,24 +24,16 @@ class SortingHatQuiz:
         self.canvas.create_image(0, 0, image=self.bg_image, anchor="nw")
 
         # Display welcome message
-        self.welcome_label = tk.Label(self.canvas, text="Welcome to the Harry Potter Sorting Hat Quiz!", font=("Helvetica", 16))
-        self.welcome_label.place(relx=0.5, rely=0.3, anchor="center")
+        welcome_label = tk.Label(self.root, text="Welcome to the Harry Potter Sorting Hat Quiz!", font=("Helvetica", 16))
+        welcome_label.place(relx=0.5, rely=0.3, anchor="center")
 
         # Create a start button
-        self.start_button = tk.Button(self.canvas, text="Start", font=("Helvetica", 14), command=self.start_quiz)
-        self.start_button.place(relx=0.5, rely=0.5, anchor="center")
-
-    def start_quiz(self):
-        # Destroy current widgets
-        self.canvas.destroy()
-        self.root.geometry("")  # Reset geometry
-
-        # Create new frame for quiz questions
-        quiz_frame = tk.Frame(self.root)
-        quiz_frame.pack(pady=20)
-
-        # Define questions and answer options
-        questions = [
+        start_button = tk.Button(self.root, text="Start", font=("Helvetica", 14), command=self.start_quiz)
+        start_button.place(relx=0.5, rely=0.5, anchor="center")
+    def __init__(self, root):
+        self.root = root
+        self.current_question = 0
+        self.questions = [
             "Which of the following colors do you like the most?",
             "Which of the following animals do you like the most?",
             "Which of the following Harry Potter characters is your favorite?",
@@ -51,9 +42,8 @@ class SortingHatQuiz:
             "If you were a wizard, what class would you be most interested in taking?",
             "If you had to describe yourself in one word, which one would it be?"
         ]
-
-        answers = [
-            ["Red", "Blue", "Green", "White/yellow"],
+        self.answers = [
+            ["Red", "Blue", "Green", "Yellow"],
             ["Eagle", "Lion", "Snake", "Badger"],
             ["Harry Potter", "Luna Lovegood", "Draco Malfoy", "Cedric Diggory"],
             ["Read a book", "Watch TV on the couch", "Play sports", "Work on an art project"],
@@ -61,41 +51,70 @@ class SortingHatQuiz:
             ["History of Magic", "Herbology", "Defense Against the Dark Arts", "Care of Magical Creatures"],
             ["Brave", "Loyal", "Intelligent", "Ambitious"]
         ]
+        self.house_scores = {
+            "Gryffindor": 0,
+            "Hufflepuff": 0,
+            "Ravenclaw": 0,
+            "Slytherin": 0
+        }
+        self.init_window()
 
-        # Create labels and radio buttons for questions and answers
-        self.questions_labels = []
-        self.answers_vars = []
+    def init_window(self):
+        self.root.title("Sorting Hat Quiz")
+        self.screen_size = (800, 600)
+        width, height = self.screen_size
+        self.root.geometry(f"{width}x{height}")
 
-        for i, question in enumerate(questions):
-            question_label = tk.Label(quiz_frame, text=question, font=("Helvetica", 14), wraplength=600)
-            question_label.grid(row=i, column=0, padx=10, pady=10, sticky="w")
-            self.questions_labels.append(question_label)
+        self.question_label = tk.Label(self.root, text=self.questions[self.current_question], font=("Helvetica", 16))
+        self.question_label.pack(pady=20)
 
-            answer_var = tk.StringVar()
-            for j, answer in enumerate(answers[i]):
-                answer_radio = tk.Radiobutton(quiz_frame, text=answer, font=("Helvetica", 12), variable=answer_var, value=answer)
-                answer_radio.grid(row=i, column=j+1, padx=10, pady=10, sticky="w")
-            self.answers_vars.append(answer_var)
+        self.answer_buttons = []
+        for answer in self.answers[self.current_question]:
+            button = tk.Button(self.root, text=answer, font=("Helvetica", 14), command=lambda ans=answer: self.process_answer(ans))
+            button.pack(pady=5)
+            self.answer_buttons.append(button)
 
-        # Create submit button
-        self.submit_button = tk.Button(self.root, text="Submit", font=("Helvetica", 14), command=self.submit_quiz)
-        self.submit_button.pack(pady=20)
+    def process_answer(self, answer):
+        # Update house scores based on the answer
+        if answer == "Red" or answer == "Lion" or answer == "Harry Potter" or answer == "Play sports" or answer == "Brave":
+            self.house_scores["Gryffindor"] += 1
+        elif answer == "Yellow" or answer == "Badger" or answer == "Cedric Diggory" or answer == "Work on an art project" or answer == "Loyal":
+            self.house_scores["Hufflepuff"] += 1
+        elif answer == "Blue" or answer == "Eagle" or answer == "Luna Lovegood" or answer == "Read a book" or answer == "Intelligent":
+            self.house_scores["Ravenclaw"] += 1
+        elif answer == "Green" or answer == "Snake" or answer == "Draco Malfoy" or answer == "Watch TV on the couch" or answer == "Ambitious":
+            self.house_scores["Slytherin"] += 1
 
-    def submit_quiz(self):
-        # Destroy current widgets
-        for label in self.questions_labels:
-            label.destroy()
-        self.submit_button.destroy()
+        # Move to the next question or display the result
+        self.current_question += 1
+        if self.current_question < len(self.questions):
+            self.update_question()
+        else:
+            self.display_result()
 
-        # Retrieve selected answers and do something with them
-        selected_answers = [answer.get() for answer in self.answers_vars]
-        print(selected_answers)
+    def update_question(self):
+        # Clear previous answer buttons
+        for button in self.answer_buttons:
+            button.destroy()
 
-        # Create a new label to display the result
-        result_label = tk.Label(self.root, text="You have been placed in this house:", font=("Helvetica", 16))
+        # Display next question
+        self.question_label.config(text=self.questions[self.current_question])
+
+        # Display answer buttons for the next question
+        self.answer_buttons = []
+        for answer in self.answers[self.current_question]:
+            button = tk.Button(self.root, text=answer, font=("Helvetica", 14), command=lambda ans=answer: self.process_answer(ans))
+            button.pack(pady=5)
+            self.answer_buttons.append(button)
+
+    def display_result(self):
+        # Determine the house with the highest score
+        sorted_houses = sorted(self.house_scores.items(), key=lambda x: x[1], reverse=True)
+        winner_house = sorted_houses[0][0]
+        
+        # Display the result
+        result_label = tk.Label(self.root, text=f"Congratulations! You have been placed in {winner_house} house!", font=("Helvetica", 16))
         result_label.pack(pady=20)
-
-        # You can add more logic here to determine the house based on the answers and display it on the label
 
 def main():
     # Create the main window
@@ -105,3 +124,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
