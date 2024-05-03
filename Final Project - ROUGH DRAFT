@@ -25,12 +25,12 @@ class SortingHatQuiz:
         self.canvas.create_image(0, 0, image=self.bg_image, anchor="nw")
 
         # Display welcome message
-        welcome_label = tk.Label(self.root, text="Welcome to the Harry Potter Sorting Hat Quiz!", font=("Helvetica", 16))
-        welcome_label.place(relx=0.5, rely=0.3, anchor="center")
+        self.welcome_label = tk.Label(self.canvas, text="Welcome to the Harry Potter Sorting Hat Quiz!", font=("Helvetica", 16))
+        self.welcome_label.place(relx=0.5, rely=0.3, anchor="center")
 
         # Create a start button
-        start_button = tk.Button(self.root, text="Start", font=("Helvetica", 14), command=self.start_quiz)
-        start_button.place(relx=0.5, rely=0.5, anchor="center")
+        self.start_button = tk.Button(self.canvas, text="Start", font=("Helvetica", 14), command=self.start_quiz)
+        self.start_button.place(relx=0.5, rely=0.5, anchor="center")
 
     def start_quiz(self):
         # Destroy current widgets
@@ -78,14 +78,24 @@ class SortingHatQuiz:
             self.answers_vars.append(answer_var)
 
         # Create submit button
-        submit_button = tk.Button(self.root, text="Submit", font=("Helvetica", 14), command=self.submit_quiz)
-        submit_button.pack(pady=20)
+        self.submit_button = tk.Button(self.root, text="Submit", font=("Helvetica", 14), command=self.submit_quiz)
+        self.submit_button.pack(pady=20)
 
     def submit_quiz(self):
+        # Destroy current widgets
+        for label in self.questions_labels:
+            label.destroy()
+        self.submit_button.destroy()
+
         # Retrieve selected answers and do something with them
         selected_answers = [answer.get() for answer in self.answers_vars]
         print(selected_answers)
 
+        # Create a new label to display the result
+        result_label = tk.Label(self.root, text="You have been placed in this house:", font=("Helvetica", 16))
+        result_label.pack(pady=20)
+
+        # You can add more logic here to determine the house based on the answers and display it on the label
 
 def main():
     # Create the main window
