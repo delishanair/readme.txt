@@ -1,0 +1,97 @@
+import tkinter as tk
+from PIL import Image, ImageTk
+
+class SortingHatQuiz:
+    def __init__(self, root):
+        self.root = root
+        self.init_window()
+
+    def init_window(self):
+        self.root.title("Sorting Hat Quiz")
+        self.screen_size = (800, 600)
+        width, height = self.screen_size
+        self.root.geometry(f"{width}x{height}")
+
+        # Load the background image
+        bg_image = Image.open("HP_Sorting_Background.png")
+        bg_image = bg_image.resize((width, height), Image.ANTIALIAS)
+        self.bg_image = ImageTk.PhotoImage(bg_image)
+
+        # Create a Canvas widget for the background image
+        self.canvas = tk.Canvas(self.root, width=width, height=height)
+        self.canvas.pack()
+
+        # Display the background image
+        self.canvas.create_image(0, 0, image=self.bg_image, anchor="nw")
+
+        # Display welcome message
+        welcome_label = tk.Label(self.root, text="Welcome to the Harry Potter Sorting Hat Quiz!", font=("Helvetica", 16))
+        welcome_label.place(relx=0.5, rely=0.3, anchor="center")
+
+        # Create a start button
+        start_button = tk.Button(self.root, text="Start", font=("Helvetica", 14), command=self.start_quiz)
+        start_button.place(relx=0.5, rely=0.5, anchor="center")
+
+    def start_quiz(self):
+        # Destroy current widgets
+        self.canvas.destroy()
+        self.root.geometry("")  # Reset geometry
+
+        # Create new frame for quiz questions
+        quiz_frame = tk.Frame(self.root)
+        quiz_frame.pack(pady=20)
+
+        # Define questions and answer options
+        questions = [
+            "Which of the following colors do you like the most?",
+            "Which of the following animals do you like the most?",
+            "Which of the following Harry Potter characters is your favorite?",
+            "What do you like to do in your free time?",
+            "Which of the following classes do you like the most?",
+            "If you were a wizard, what class would you be most interested in taking?",
+            "If you had to describe yourself in one word, which one would it be?"
+        ]
+
+        answers = [
+            ["Red", "Blue", "Green", "White/yellow"],
+            ["Eagle", "Lion", "Snake", "Badger"],
+            ["Harry Potter", "Luna Lovegood", "Draco Malfoy", "Cedric Diggory"],
+            ["Read a book", "Watch TV on the couch", "Play sports", "Work on an art project"],
+            ["Math", "History", "English/reading", "Physical Education"],
+            ["History of Magic", "Herbology", "Defense Against the Dark Arts", "Care of Magical Creatures"],
+            ["Brave", "Loyal", "Intelligent", "Ambitious"]
+        ]
+
+        # Create labels and radio buttons for questions and answers
+        self.questions_labels = []
+        self.answers_vars = []
+
+        for i, question in enumerate(questions):
+            question_label = tk.Label(quiz_frame, text=question, font=("Helvetica", 14), wraplength=600)
+            question_label.grid(row=i, column=0, padx=10, pady=10, sticky="w")
+            self.questions_labels.append(question_label)
+
+            answer_var = tk.StringVar()
+            for j, answer in enumerate(answers[i]):
+                answer_radio = tk.Radiobutton(quiz_frame, text=answer, font=("Helvetica", 12), variable=answer_var, value=answer)
+                answer_radio.grid(row=i, column=j+1, padx=10, pady=10, sticky="w")
+            self.answers_vars.append(answer_var)
+
+        # Create submit button
+        submit_button = tk.Button(self.root, text="Submit", font=("Helvetica", 14), command=self.submit_quiz)
+        submit_button.pack(pady=20)
+
+    def submit_quiz(self):
+        # Retrieve selected answers and do something with them
+        selected_answers = [answer.get() for answer in self.answers_vars]
+        print(selected_answers)
+
+
+def main():
+    # Create the main window
+    root = tk.Tk()
+    sorting_hat_quiz = SortingHatQuiz(root)
+    root.mainloop()
+
+if __name__ == "__main__":
+    main()
