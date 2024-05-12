@@ -8,36 +8,28 @@ class SortingHatQuiz:
 
     def init_window(self):
         self.root.title("Sorting Hat Quiz")
-        self.screen_width = self.root.winfo_screenwidth()
-        self.screen_height = self.root.winfo_screenheight()
+        self.screen_size = (800, 600)
+        width, height = self.screen_size
 
         # Load the background image
         bg_image = Image.open("HP_Sorting_Background.png")
-        bg_image = bg_image.resize((self.screen_width, self.screen_height))
+        bg_image = bg_image.resize((width, height), Image.ANTIALIAS)
         self.bg_image = ImageTk.PhotoImage(bg_image)
 
         # Create a Canvas widget for the background image
-        self.canvas = tk.Canvas(self.root, width=self.screen_width, height=self.screen_height)
+        self.canvas = tk.Canvas(self.root, width=width, height=height)
         self.canvas.pack()
 
         # Display the background image
         self.canvas.create_image(0, 0, image=self.bg_image, anchor="nw")
 
         # Display welcome message
-        self.welcome_label = tk.Label(self.root, text="Welcome to the Harry Potter Sorting Hat Quiz!", font=("Helvetica", 16))
-        self.welcome_label.place(relx=0.5, rely=0.3, anchor="center")
+        welcome_label = tk.Label(self.root, text="Welcome to the Harry Potter Sorting Hat Quiz!", font=("Helvetica", 16))
+        welcome_label.place(relx=0.5, rely=0.3, anchor="center")
 
         # Create a start button
         start_button = tk.Button(self.root, text="Start", font=("Helvetica", 14), command=self.start_quiz)
         start_button.place(relx=0.5, rely=0.5, anchor="center")
-
-        # House logos
-        self.house_logos = {
-            "Gryffindor": ImageTk.PhotoImage(Image.open("Gryffindor.png").resize((300, 300))),
-            "Hufflepuff": ImageTk.PhotoImage(Image.open("Hufflepuff.png").resize((300, 300))),
-            "Ravenclaw": ImageTk.PhotoImage(Image.open("Ravenclaw.png").resize((300, 300))),
-            "Slytherin": ImageTk.PhotoImage(Image.open("Slytherin.png").resize((300, 300))),
-        }
 
     def start_quiz(self):
         # Destroy current widgets
@@ -74,16 +66,12 @@ class SortingHatQuiz:
         self.display_question()
 
     def display_question(self):
-        # Destroy old question label and answer buttons
-        if hasattr(self, 'question_label'):
-            self.question_label.destroy()
-        if hasattr(self, 'answer_buttons'):
-            for button in self.answer_buttons:
-                button.destroy()
+        # Destroy current widgets
+        self.destroy_widgets()
 
         # Display current question
-        self.question_label = tk.Label(self.root, text=self.questions[self.current_question], font=("Helvetica", 16))
-        self.question_label.place(relx=0.5, rely=0.3, anchor="center")
+        question_label = tk.Label(self.root, text=self.questions[self.current_question], font=("Helvetica", 16))
+        question_label.place(relx=0.5, rely=0.3, anchor="center")
 
         # Display answer buttons for the current question
         self.answer_buttons = []
@@ -110,29 +98,26 @@ class SortingHatQuiz:
         else:
             self.display_result()
 
+    def destroy_widgets(self):
+        # Destroy current question widgets
+        for button in getattr(self, 'answer_buttons', []):
+            button.destroy()
+
     def display_result(self):
         # Determine the house with the highest score
         sorted_houses = sorted(self.house_scores.items(), key=lambda x: x[1], reverse=True)
         winner_house = sorted_houses[0][0]
         
         # Destroy current widgets
-        self.question_label.destroy()
-        for button in self.answer_buttons:
-            button.destroy()
-        self.welcome_label.destroy()
+        self.destroy_widgets()
 
-        # Display the result and corresponding house logo
+        # Display the result
         result_label = tk.Label(self.root, text=f"Congratulations! You have been placed in {winner_house} house!", font=("Helvetica", 16))
-        result_label.place(relx=0.5, rely=0.4, anchor="center")
-
-        house_logo = self.house_logos[winner_house]
-        house_logo_label = tk.Label(self.root, image=house_logo)
-        house_logo_label.place(relx=0.5, rely=0.6, anchor="center")
+        result_label.place(relx=0.5, rely=0.5, anchor="center")
 
 def main():
     # Create the main window
     root = tk.Tk()
-    root.attributes("-fullscreen", True)  # Set fullscreen mode
     sorting_hat_quiz = SortingHatQuiz(root)
     root.mainloop()
 
