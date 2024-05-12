@@ -1,5 +1,3 @@
-#BEFORE RUNNING THE CODE, PLEASE DOWNLOAD THE IMAGES IN THIS FOLDER!
-
 import tkinter as tk
 from PIL import Image, ImageTk
 
@@ -51,7 +49,7 @@ class SortingHatQuiz:
             "Which of the following colors do you like the most?",
             "Which of the following animals do you like the most?",
             "Which of the following Harry Potter characters is your favorite?",
-            "Which of the following activities do you like to do like in your free time?",
+            "Which of the following do you like to do in your free time?",
             "Which of the following classes do you like the most?",
             "If you were a wizard, what class would you be most interested in taking?",
             "If you had to describe yourself in one word, which one would it be?"
